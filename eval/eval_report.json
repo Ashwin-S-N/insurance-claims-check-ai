@@ -1,0 +1,1560 @@
+{
+  "summary": {
+    "passed": 12,
+    "total": 12
+  },
+  "results": [
+    {
+      "case_id": "TC001",
+      "case_name": "Wrong Document Uploaded",
+      "matched_expected": true,
+      "expected": {
+        "decision": null,
+        "system_must": [
+          "Stop before making any claim decision",
+          "Tell the member specifically what document type was uploaded and what is needed instead",
+          "Not return a generic error \u2014 the message must name the uploaded document type and the required document type"
+        ]
+      },
+      "response": {
+        "claim_id": "CLM-4B99DEA2BE",
+        "stopped_early": true,
+        "stop_code": "DOCUMENTS_MISSING_OR_WRONG",
+        "message": "This consultation claim needs HOSPITAL_BILL, PRESCRIPTION. You uploaded 2 x PRESCRIPTION. Please upload the missing HOSPITAL_BILL document.",
+        "decision": null,
+        "approved_amount": 0.0,
+        "confidence_score": 0.0,
+        "rejection_reasons": [],
+        "line_item_results": [],
+        "fraud_score": null,
+        "fraud_signals": [],
+        "trace": [
+          {
+            "step": "trace_builder",
+            "status": "INFO",
+            "message": "Trace initialized for claim pipeline.",
+            "data": {
+              "claim_id": "CLM-4B99DEA2BE"
+            },
+            "timestamp": "2026-05-31T06:28:30.364084Z"
+          },
+          {
+            "step": "document_verification",
+            "status": "FAIL",
+            "message": "This consultation claim needs HOSPITAL_BILL, PRESCRIPTION. You uploaded 2 x PRESCRIPTION. Please upload the missing HOSPITAL_BILL document.",
+            "data": {
+              "required": [
+                "HOSPITAL_BILL",
+                "PRESCRIPTION"
+              ],
+              "uploaded": [
+                "PRESCRIPTION",
+                "PRESCRIPTION"
+              ],
+              "missing": [
+                "HOSPITAL_BILL"
+              ],
+              "duplicate_required_documents": [
+                "PRESCRIPTION"
+              ]
+            },
+            "timestamp": "2026-05-31T06:28:30.365254Z"
+          }
+        ],
+        "extracted": null
+      }
+    },
+    {
+      "case_id": "TC002",
+      "case_name": "Unreadable Document",
+      "matched_expected": true,
+      "expected": {
+        "decision": null,
+        "system_must": [
+          "Identify that the pharmacy bill cannot be read",
+          "Ask the member to re-upload that specific document",
+          "Not reject the claim outright"
+        ]
+      },
+      "response": {
+        "claim_id": "CLM-28CEFD51D7",
+        "stopped_early": true,
+        "stop_code": "DOCUMENT_UNREADABLE",
+        "message": "The uploaded pharmacy bill (blurry_bill.jpg) cannot be read. Please re-upload a clear image or PDF of that specific pharmacy bill; the claim has not been rejected.",
+        "decision": null,
+        "approved_amount": 0.0,
+        "confidence_score": 0.0,
+        "rejection_reasons": [],
+        "line_item_results": [],
+        "fraud_score": null,
+        "fraud_signals": [],
+        "trace": [
+          {
+            "step": "trace_builder",
+            "status": "INFO",
+            "message": "Trace initialized for claim pipeline.",
+            "data": {
+              "claim_id": "CLM-28CEFD51D7"
+            },
+            "timestamp": "2026-05-31T06:28:30.374088Z"
+          },
+          {
+            "step": "document_verification",
+            "status": "FAIL",
+            "message": "The uploaded pharmacy bill (blurry_bill.jpg) cannot be read. Please re-upload a clear image or PDF of that specific pharmacy bill; the claim has not been rejected.",
+            "data": {
+              "file_id": "F004",
+              "document_type": "PHARMACY_BILL"
+            },
+            "timestamp": "2026-05-31T06:28:30.375322Z"
+          }
+        ],
+        "extracted": null
+      }
+    },
+    {
+      "case_id": "TC003",
+      "case_name": "Documents Belong to Different Patients",
+      "matched_expected": true,
+      "expected": {
+        "decision": null,
+        "system_must": [
+          "Detect that the documents belong to different people",
+          "Surface this to the member with the specific names found on each document",
+          "Not proceed to a claim decision"
+        ]
+      },
+      "response": {
+        "claim_id": "CLM-3915BF8F79",
+        "stopped_early": true,
+        "stop_code": "PATIENT_MISMATCH",
+        "message": "The uploaded documents appear to belong to different patients. I found these names: F005: Rajesh Kumar; F006: Arjun Mehta. Please upload documents for the same patient.",
+        "decision": null,
+        "approved_amount": 0.0,
+        "confidence_score": 0.0,
+        "rejection_reasons": [],
+        "line_item_results": [],
+        "fraud_score": null,
+        "fraud_signals": [],
+        "trace": [
+          {
+            "step": "trace_builder",
+            "status": "INFO",
+            "message": "Trace initialized for claim pipeline.",
+            "data": {
+              "claim_id": "CLM-3915BF8F79"
+            },
+            "timestamp": "2026-05-31T06:28:30.378547Z"
+          },
+          {
+            "step": "document_verification",
+            "status": "FAIL",
+            "message": "The uploaded documents appear to belong to different patients. I found these names: F005: Rajesh Kumar; F006: Arjun Mehta. Please upload documents for the same patient.",
+            "data": {
+              "patient_names_by_file": {
+                "F005": "Rajesh Kumar",
+                "F006": "Arjun Mehta"
+              }
+            },
+            "timestamp": "2026-05-31T06:28:30.378547Z"
+          }
+        ],
+        "extracted": null
+      }
+    },
+    {
+      "case_id": "TC004",
+      "case_name": "Clean Consultation \u2014 Full Approval",
+      "matched_expected": true,
+      "expected": {
+        "decision": "APPROVED",
+        "approved_amount": 1350,
+        "notes": "10% co-pay applied on consultation category (\u20b9150 deducted)",
+        "confidence_score": "above 0.85"
+      },
+      "response": {
+        "claim_id": "CLM-AAC7CB1905",
+        "stopped_early": false,
+        "stop_code": null,
+        "message": "Claim approved. Co-pay (10%) deducted from INR 1500; final payable INR 1350.",
+        "decision": "APPROVED",
+        "approved_amount": 1350.0,
+        "confidence_score": 0.92,
+        "rejection_reasons": [],
+        "line_item_results": [],
+        "fraud_score": 0.05,
+        "fraud_signals": [],
+        "trace": [
+          {
+            "step": "trace_builder",
+            "status": "INFO",
+            "message": "Trace initialized for claim pipeline.",
+            "data": {
+              "claim_id": "CLM-AAC7CB1905"
+            },
+            "timestamp": "2026-05-31T06:28:30.382106Z"
+          },
+          {
+            "step": "document_verification",
+            "status": "PASS",
+            "message": "Required documents are present, readable, and internally consistent.",
+            "data": {
+              "required": [
+                "HOSPITAL_BILL",
+                "PRESCRIPTION"
+              ],
+              "uploaded": [
+                "PRESCRIPTION",
+                "HOSPITAL_BILL"
+              ]
+            },
+            "timestamp": "2026-05-31T06:28:30.383294Z"
+          },
+          {
+            "step": "extraction_agent",
+            "status": "PASS",
+            "message": "Structured claim fields extracted from document metadata/content.",
+            "data": {
+              "confidence": 0.92,
+              "patient_names": [
+                "Rajesh Kumar"
+              ],
+              "total_amount": 1500.0,
+              "warnings": []
+            },
+            "timestamp": "2026-05-31T06:28:30.384595Z"
+          },
+          {
+            "step": "policy_engine",
+            "status": "PASS",
+            "message": "Policy rules applied successfully.",
+            "data": {
+              "category": "CONSULTATION",
+              "approved_amount": 1350.0,
+              "notes": [
+                "Co-pay (10%) deducted from INR 1500; final payable INR 1350."
+              ]
+            },
+            "timestamp": "2026-05-31T06:28:30.386942Z"
+          },
+          {
+            "step": "fraud_agent",
+            "status": "PASS",
+            "message": "Fraud signals evaluated.",
+            "data": {
+              "fraud_score": 0.05,
+              "signals": [],
+              "manual_review": false
+            },
+            "timestamp": "2026-05-31T06:28:30.387935Z"
+          },
+          {
+            "step": "decision_agent",
+            "status": "PASS",
+            "message": "Final claim decision produced.",
+            "data": {
+              "decision": "APPROVED",
+              "approved_amount": 1350.0,
+              "confidence_score": 0.92
+            },
+            "timestamp": "2026-05-31T06:28:30.388934Z"
+          }
+        ],
+        "extracted": {
+          "patient_names": [
+            "Rajesh Kumar"
+          ],
+          "diagnosis": "Viral Fever",
+          "treatment": null,
+          "hospital_name": "City Clinic, Bengaluru",
+          "doctor_name": "Dr. Arun Sharma",
+          "doctor_registration": "KA/45678/2015",
+          "test_names": [],
+          "line_items": [
+            {
+              "description": "Consultation Fee",
+              "amount": 1000
+            },
+            {
+              "description": "CBC Test",
+              "amount": 300
+            },
+            {
+              "description": "Dengue NS1 Test",
+              "amount": 200
+            }
+          ],
+          "total_amount": 1500.0,
+          "confidence": 0.92,
+          "fields": {
+            "F007": {
+              "document_type": "PRESCRIPTION",
+              "content": {
+                "doctor_name": "Dr. Arun Sharma",
+                "doctor_registration": "KA/45678/2015",
+                "patient_name": "Rajesh Kumar",
+                "date": "2024-11-01",
+                "diagnosis": "Viral Fever",
+                "medicines": [
+                  "Paracetamol 650mg",
+                  "Vitamin C 500mg"
+                ]
+              }
+            },
+            "F008": {
+              "document_type": "HOSPITAL_BILL",
+              "content": {
+                "hospital_name": "City Clinic, Bengaluru",
+                "patient_name": "Rajesh Kumar",
+                "date": "2024-11-01",
+                "line_items": [
+                  {
+                    "description": "Consultation Fee",
+                    "amount": 1000
+                  },
+                  {
+                    "description": "CBC Test",
+                    "amount": 300
+                  },
+                  {
+                    "description": "Dengue NS1 Test",
+                    "amount": 200
+                  }
+                ],
+                "total": 1500
+              }
+            }
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "case_id": "TC005",
+      "case_name": "Waiting Period \u2014 Diabetes",
+      "matched_expected": true,
+      "expected": {
+        "decision": "REJECTED",
+        "rejection_reasons": [
+          "WAITING_PERIOD"
+        ],
+        "system_must": [
+          "State the date from which the member will be eligible for diabetes-related claims"
+        ]
+      },
+      "response": {
+        "claim_id": "CLM-0A7C28994E",
+        "stopped_early": false,
+        "stop_code": null,
+        "message": "Claim rejected: Diabetes has a 90-day waiting period. Eligible from 2024-11-30.",
+        "decision": "REJECTED",
+        "approved_amount": 0.0,
+        "confidence_score": 0.92,
+        "rejection_reasons": [
+          "WAITING_PERIOD"
+        ],
+        "line_item_results": [],
+        "fraud_score": 0.05,
+        "fraud_signals": [],
+        "trace": [
+          {
+            "step": "trace_builder",
+            "status": "INFO",
+            "message": "Trace initialized for claim pipeline.",
+            "data": {
+              "claim_id": "CLM-0A7C28994E"
+            },
+            "timestamp": "2026-05-31T06:28:30.392382Z"
+          },
+          {
+            "step": "document_verification",
+            "status": "PASS",
+            "message": "Required documents are present, readable, and internally consistent.",
+            "data": {
+              "required": [
+                "HOSPITAL_BILL",
+                "PRESCRIPTION"
+              ],
+              "uploaded": [
+                "PRESCRIPTION",
+                "HOSPITAL_BILL"
+              ]
+            },
+            "timestamp": "2026-05-31T06:28:30.392382Z"
+          },
+          {
+            "step": "extraction_agent",
+            "status": "PASS",
+            "message": "Structured claim fields extracted from document metadata/content.",
+            "data": {
+              "confidence": 0.92,
+              "patient_names": [
+                "Vikram Joshi"
+              ],
+              "total_amount": 3000.0,
+              "warnings": []
+            },
+            "timestamp": "2026-05-31T06:28:30.393401Z"
+          },
+          {
+            "step": "policy_engine",
+            "status": "FAIL",
+            "message": "Specific-condition waiting period failed.",
+            "data": {
+              "condition": "diabetes",
+              "waiting_period_days": 90,
+              "member_join_date": "2024-09-01",
+              "eligible_from": "2024-11-30"
+            },
+            "timestamp": "2026-05-31T06:28:30.393401Z"
+          },
+          {
+            "step": "fraud_agent",
+            "status": "PASS",
+            "message": "Fraud signals evaluated.",
+            "data": {
+              "fraud_score": 0.05,
+              "signals": [],
+              "manual_review": false
+            },
+            "timestamp": "2026-05-31T06:28:30.394810Z"
+          },
+          {
+            "step": "decision_agent",
+            "status": "WARN",
+            "message": "Final claim decision produced.",
+            "data": {
+              "decision": "REJECTED",
+              "approved_amount": 0.0,
+              "confidence_score": 0.92
+            },
+            "timestamp": "2026-05-31T06:28:30.395811Z"
+          }
+        ],
+        "extracted": {
+          "patient_names": [
+            "Vikram Joshi"
+          ],
+          "diagnosis": "Type 2 Diabetes Mellitus",
+          "treatment": null,
+          "hospital_name": null,
+          "doctor_name": "Dr. Sunil Mehta",
+          "doctor_registration": "GJ/56789/2014",
+          "test_names": [],
+          "line_items": [
+            {
+              "description": "Consultation",
+              "amount": 3000.0
+            }
+          ],
+          "total_amount": 3000.0,
+          "confidence": 0.92,
+          "fields": {
+            "F009": {
+              "document_type": "PRESCRIPTION",
+              "content": {
+                "doctor_name": "Dr. Sunil Mehta",
+                "doctor_registration": "GJ/56789/2014",
+                "patient_name": "Vikram Joshi",
+                "diagnosis": "Type 2 Diabetes Mellitus",
+                "medicines": [
+                  "Metformin 500mg",
+                  "Glimepiride 1mg"
+                ]
+              }
+            },
+            "F010": {
+              "document_type": "HOSPITAL_BILL",
+              "content": {
+                "patient_name": "Vikram Joshi",
+                "date": "2024-10-15",
+                "total": 3000
+              }
+            }
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "case_id": "TC006",
+      "case_name": "Dental Partial Approval \u2014 Cosmetic Exclusion",
+      "matched_expected": true,
+      "expected": {
+        "decision": "PARTIAL",
+        "approved_amount": 8000,
+        "system_must": [
+          "Itemize which line items were approved and which were rejected",
+          "State the reason for each rejection at the line-item level"
+        ]
+      },
+      "response": {
+        "claim_id": "CLM-FA5B3D9357",
+        "stopped_early": false,
+        "stop_code": null,
+        "message": "Claim partially approved. Dental line items were evaluated against covered and excluded procedures.",
+        "decision": "PARTIAL",
+        "approved_amount": 8000.0,
+        "confidence_score": 0.92,
+        "rejection_reasons": [],
+        "line_item_results": [
+          {
+            "description": "Root Canal Treatment",
+            "amount": 8000.0,
+            "status": "APPROVED"
+          },
+          {
+            "description": "Teeth Whitening",
+            "amount": 4000.0,
+            "status": "REJECTED",
+            "reason": "COSMETIC_EXCLUSION"
+          }
+        ],
+        "fraud_score": 0.05,
+        "fraud_signals": [],
+        "trace": [
+          {
+            "step": "trace_builder",
+            "status": "INFO",
+            "message": "Trace initialized for claim pipeline.",
+            "data": {
+              "claim_id": "CLM-FA5B3D9357"
+            },
+            "timestamp": "2026-05-31T06:28:30.399810Z"
+          },
+          {
+            "step": "document_verification",
+            "status": "PASS",
+            "message": "Required documents are present, readable, and internally consistent.",
+            "data": {
+              "required": [
+                "HOSPITAL_BILL"
+              ],
+              "uploaded": [
+                "HOSPITAL_BILL"
+              ]
+            },
+            "timestamp": "2026-05-31T06:28:30.399810Z"
+          },
+          {
+            "step": "extraction_agent",
+            "status": "PASS",
+            "message": "Structured claim fields extracted from document metadata/content.",
+            "data": {
+              "confidence": 0.92,
+              "patient_names": [
+                "Priya Singh"
+              ],
+              "total_amount": 12000.0,
+              "warnings": []
+            },
+            "timestamp": "2026-05-31T06:28:30.400811Z"
+          },
+          {
+            "step": "policy_engine",
+            "status": "WARN",
+            "message": "Dental line-item policy applied.",
+            "data": {
+              "line_items": [
+                {
+                  "description": "Root Canal Treatment",
+                  "amount": 8000.0,
+                  "status": "APPROVED"
+                },
+                {
+                  "description": "Teeth Whitening",
+                  "amount": 4000.0,
+                  "status": "REJECTED",
+                  "reason": "COSMETIC_EXCLUSION"
+                }
+              ]
+            },
+            "timestamp": "2026-05-31T06:28:30.401809Z"
+          },
+          {
+            "step": "fraud_agent",
+            "status": "PASS",
+            "message": "Fraud signals evaluated.",
+            "data": {
+              "fraud_score": 0.05,
+              "signals": [],
+              "manual_review": false
+            },
+            "timestamp": "2026-05-31T06:28:30.401809Z"
+          },
+          {
+            "step": "decision_agent",
+            "status": "PASS",
+            "message": "Final claim decision produced.",
+            "data": {
+              "decision": "PARTIAL",
+              "approved_amount": 8000.0,
+              "confidence_score": 0.92
+            },
+            "timestamp": "2026-05-31T06:28:30.403811Z"
+          }
+        ],
+        "extracted": {
+          "patient_names": [
+            "Priya Singh"
+          ],
+          "diagnosis": null,
+          "treatment": null,
+          "hospital_name": "Smile Dental Clinic",
+          "doctor_name": null,
+          "doctor_registration": null,
+          "test_names": [],
+          "line_items": [
+            {
+              "description": "Root Canal Treatment",
+              "amount": 8000
+            },
+            {
+              "description": "Teeth Whitening",
+              "amount": 4000
+            }
+          ],
+          "total_amount": 12000.0,
+          "confidence": 0.92,
+          "fields": {
+            "F011": {
+              "document_type": "HOSPITAL_BILL",
+              "content": {
+                "hospital_name": "Smile Dental Clinic",
+                "patient_name": "Priya Singh",
+                "line_items": [
+                  {
+                    "description": "Root Canal Treatment",
+                    "amount": 8000
+                  },
+                  {
+                    "description": "Teeth Whitening",
+                    "amount": 4000
+                  }
+                ],
+                "total": 12000
+              }
+            }
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "case_id": "TC007",
+      "case_name": "MRI Without Pre-Authorization",
+      "matched_expected": true,
+      "expected": {
+        "decision": "REJECTED",
+        "rejection_reasons": [
+          "PRE_AUTH_MISSING"
+        ],
+        "system_must": [
+          "Explain that pre-authorization was required and not obtained",
+          "Tell the member what they should do to resubmit with pre-auth"
+        ]
+      },
+      "response": {
+        "claim_id": "CLM-3DD1194123",
+        "stopped_early": false,
+        "stop_code": null,
+        "message": "Claim rejected: Hernia has a 365-day waiting period. Eligible from 2025-04-01.",
+        "decision": "REJECTED",
+        "approved_amount": 0.0,
+        "confidence_score": 0.92,
+        "rejection_reasons": [
+          "WAITING_PERIOD"
+        ],
+        "line_item_results": [],
+        "fraud_score": 0.05,
+        "fraud_signals": [],
+        "trace": [
+          {
+            "step": "trace_builder",
+            "status": "INFO",
+            "message": "Trace initialized for claim pipeline.",
+            "data": {
+              "claim_id": "CLM-3DD1194123"
+            },
+            "timestamp": "2026-05-31T06:28:30.407079Z"
+          },
+          {
+            "step": "document_verification",
+            "status": "PASS",
+            "message": "Required documents are present, readable, and internally consistent.",
+            "data": {
+              "required": [
+                "HOSPITAL_BILL",
+                "LAB_REPORT",
+                "PRESCRIPTION"
+              ],
+              "uploaded": [
+                "PRESCRIPTION",
+                "LAB_REPORT",
+                "HOSPITAL_BILL"
+              ]
+            },
+            "timestamp": "2026-05-31T06:28:30.408253Z"
+          },
+          {
+            "step": "extraction_agent",
+            "status": "PASS",
+            "message": "Structured claim fields extracted from document metadata/content.",
+            "data": {
+              "confidence": 0.92,
+              "patient_names": [],
+              "total_amount": 15000.0,
+              "warnings": []
+            },
+            "timestamp": "2026-05-31T06:28:30.409254Z"
+          },
+          {
+            "step": "policy_engine",
+            "status": "FAIL",
+            "message": "Specific-condition waiting period failed.",
+            "data": {
+              "condition": "hernia",
+              "waiting_period_days": 365,
+              "member_join_date": "2024-04-01",
+              "eligible_from": "2025-04-01"
+            },
+            "timestamp": "2026-05-31T06:28:30.409254Z"
+          },
+          {
+            "step": "fraud_agent",
+            "status": "PASS",
+            "message": "Fraud signals evaluated.",
+            "data": {
+              "fraud_score": 0.05,
+              "signals": [],
+              "manual_review": false
+            },
+            "timestamp": "2026-05-31T06:28:30.410327Z"
+          },
+          {
+            "step": "decision_agent",
+            "status": "WARN",
+            "message": "Final claim decision produced.",
+            "data": {
+              "decision": "REJECTED",
+              "approved_amount": 0.0,
+              "confidence_score": 0.92
+            },
+            "timestamp": "2026-05-31T06:28:30.410327Z"
+          }
+        ],
+        "extracted": {
+          "patient_names": [],
+          "diagnosis": "Suspected Lumbar Disc Herniation",
+          "treatment": null,
+          "hospital_name": null,
+          "doctor_name": "Dr. Venkat Rao",
+          "doctor_registration": "AP/67890/2017",
+          "test_names": [
+            "MRI Lumbar Spine",
+            "MRI Lumbar Spine"
+          ],
+          "line_items": [
+            {
+              "description": "MRI Lumbar Spine",
+              "amount": 15000
+            }
+          ],
+          "total_amount": 15000.0,
+          "confidence": 0.92,
+          "fields": {
+            "F012": {
+              "document_type": "PRESCRIPTION",
+              "content": {
+                "doctor_name": "Dr. Venkat Rao",
+                "doctor_registration": "AP/67890/2017",
+                "diagnosis": "Suspected Lumbar Disc Herniation",
+                "tests_ordered": [
+                  "MRI Lumbar Spine"
+                ]
+              }
+            },
+            "F013": {
+              "document_type": "LAB_REPORT",
+              "content": {
+                "test_name": "MRI Lumbar Spine"
+              }
+            },
+            "F014": {
+              "document_type": "HOSPITAL_BILL",
+              "content": {
+                "line_items": [
+                  {
+                    "description": "MRI Lumbar Spine",
+                    "amount": 15000
+                  }
+                ],
+                "total": 15000
+              }
+            }
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "case_id": "TC008",
+      "case_name": "Per-Claim Limit Exceeded",
+      "matched_expected": true,
+      "expected": {
+        "decision": "REJECTED",
+        "rejection_reasons": [
+          "PER_CLAIM_EXCEEDED"
+        ],
+        "system_must": [
+          "State the per-claim limit and the claimed amount clearly in the rejection message"
+        ]
+      },
+      "response": {
+        "claim_id": "CLM-38B9E703AF",
+        "stopped_early": false,
+        "stop_code": null,
+        "message": "Claim rejected: Claimed amount INR 7500 exceeds the per-claim limit of INR 5000.",
+        "decision": "REJECTED",
+        "approved_amount": 0.0,
+        "confidence_score": 0.92,
+        "rejection_reasons": [
+          "PER_CLAIM_EXCEEDED"
+        ],
+        "line_item_results": [],
+        "fraud_score": 0.05,
+        "fraud_signals": [],
+        "trace": [
+          {
+            "step": "trace_builder",
+            "status": "INFO",
+            "message": "Trace initialized for claim pipeline.",
+            "data": {
+              "claim_id": "CLM-38B9E703AF"
+            },
+            "timestamp": "2026-05-31T06:28:30.413803Z"
+          },
+          {
+            "step": "document_verification",
+            "status": "PASS",
+            "message": "Required documents are present, readable, and internally consistent.",
+            "data": {
+              "required": [
+                "HOSPITAL_BILL",
+                "PRESCRIPTION"
+              ],
+              "uploaded": [
+                "PRESCRIPTION",
+                "HOSPITAL_BILL"
+              ]
+            },
+            "timestamp": "2026-05-31T06:28:30.413803Z"
+          },
+          {
+            "step": "extraction_agent",
+            "status": "PASS",
+            "message": "Structured claim fields extracted from document metadata/content.",
+            "data": {
+              "confidence": 0.92,
+              "patient_names": [],
+              "total_amount": 7500.0,
+              "warnings": []
+            },
+            "timestamp": "2026-05-31T06:28:30.415298Z"
+          },
+          {
+            "step": "policy_engine",
+            "status": "FAIL",
+            "message": "Per-claim limit exceeded.",
+            "data": {
+              "claimed_amount": 7500.0,
+              "per_claim_limit": 5000
+            },
+            "timestamp": "2026-05-31T06:28:30.416350Z"
+          },
+          {
+            "step": "fraud_agent",
+            "status": "PASS",
+            "message": "Fraud signals evaluated.",
+            "data": {
+              "fraud_score": 0.05,
+              "signals": [],
+              "manual_review": false
+            },
+            "timestamp": "2026-05-31T06:28:30.416350Z"
+          },
+          {
+            "step": "decision_agent",
+            "status": "WARN",
+            "message": "Final claim decision produced.",
+            "data": {
+              "decision": "REJECTED",
+              "approved_amount": 0.0,
+              "confidence_score": 0.92
+            },
+            "timestamp": "2026-05-31T06:28:30.417724Z"
+          }
+        ],
+        "extracted": {
+          "patient_names": [],
+          "diagnosis": "Gastroenteritis",
+          "treatment": null,
+          "hospital_name": null,
+          "doctor_name": "Dr. R. Gupta",
+          "doctor_registration": "DL/34567/2016",
+          "test_names": [],
+          "line_items": [
+            {
+              "description": "Consultation Fee",
+              "amount": 2000
+            },
+            {
+              "description": "Medicines",
+              "amount": 5500
+            }
+          ],
+          "total_amount": 7500.0,
+          "confidence": 0.92,
+          "fields": {
+            "F015": {
+              "document_type": "PRESCRIPTION",
+              "content": {
+                "doctor_name": "Dr. R. Gupta",
+                "doctor_registration": "DL/34567/2016",
+                "diagnosis": "Gastroenteritis",
+                "medicines": [
+                  "Antibiotics",
+                  "Probiotics",
+                  "ORS"
+                ]
+              }
+            },
+            "F016": {
+              "document_type": "HOSPITAL_BILL",
+              "content": {
+                "line_items": [
+                  {
+                    "description": "Consultation Fee",
+                    "amount": 2000
+                  },
+                  {
+                    "description": "Medicines",
+                    "amount": 5500
+                  }
+                ],
+                "total": 7500
+              }
+            }
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "case_id": "TC009",
+      "case_name": "Fraud Signal \u2014 Multiple Same-Day Claims",
+      "matched_expected": true,
+      "expected": {
+        "decision": "MANUAL_REVIEW",
+        "system_must": [
+          "Flag the unusual same-day claim pattern",
+          "Route to manual review rather than auto-rejecting",
+          "Include the specific signals that triggered the flag in the output"
+        ]
+      },
+      "response": {
+        "claim_id": "CLM-1B95A5096A",
+        "stopped_early": false,
+        "stop_code": null,
+        "message": "Claim routed to manual review due to fraud signals: SAME_DAY_CLAIM_PATTERN: 3 previous claims on 2024-10-30; this is claim #4.",
+        "decision": "MANUAL_REVIEW",
+        "approved_amount": 0.0,
+        "confidence_score": 0.74,
+        "rejection_reasons": [],
+        "line_item_results": [],
+        "fraud_score": 0.8300000000000001,
+        "fraud_signals": [
+          "SAME_DAY_CLAIM_PATTERN: 3 previous claims on 2024-10-30; this is claim #4."
+        ],
+        "trace": [
+          {
+            "step": "trace_builder",
+            "status": "INFO",
+            "message": "Trace initialized for claim pipeline.",
+            "data": {
+              "claim_id": "CLM-1B95A5096A"
+            },
+            "timestamp": "2026-05-31T06:28:30.420724Z"
+          },
+          {
+            "step": "document_verification",
+            "status": "PASS",
+            "message": "Required documents are present, readable, and internally consistent.",
+            "data": {
+              "required": [
+                "HOSPITAL_BILL",
+                "PRESCRIPTION"
+              ],
+              "uploaded": [
+                "PRESCRIPTION",
+                "HOSPITAL_BILL"
+              ]
+            },
+            "timestamp": "2026-05-31T06:28:30.421995Z"
+          },
+          {
+            "step": "extraction_agent",
+            "status": "PASS",
+            "message": "Structured claim fields extracted from document metadata/content.",
+            "data": {
+              "confidence": 0.92,
+              "patient_names": [],
+              "total_amount": 4800.0,
+              "warnings": []
+            },
+            "timestamp": "2026-05-31T06:28:30.423274Z"
+          },
+          {
+            "step": "policy_engine",
+            "status": "PASS",
+            "message": "Policy rules applied successfully.",
+            "data": {
+              "category": "CONSULTATION",
+              "approved_amount": 4320.0,
+              "notes": [
+                "Co-pay (10%) deducted from INR 4800; final payable INR 4320."
+              ]
+            },
+            "timestamp": "2026-05-31T06:28:30.424279Z"
+          },
+          {
+            "step": "fraud_agent",
+            "status": "WARN",
+            "message": "Fraud signals evaluated.",
+            "data": {
+              "fraud_score": 0.8300000000000001,
+              "signals": [
+                "SAME_DAY_CLAIM_PATTERN: 3 previous claims on 2024-10-30; this is claim #4."
+              ],
+              "manual_review": true
+            },
+            "timestamp": "2026-05-31T06:28:30.425277Z"
+          },
+          {
+            "step": "decision_agent",
+            "status": "WARN",
+            "message": "Final claim decision produced.",
+            "data": {
+              "decision": "MANUAL_REVIEW",
+              "approved_amount": 0.0,
+              "confidence_score": 0.74
+            },
+            "timestamp": "2026-05-31T06:28:30.425277Z"
+          }
+        ],
+        "extracted": {
+          "patient_names": [],
+          "diagnosis": "Migraine",
+          "treatment": null,
+          "hospital_name": null,
+          "doctor_name": "Dr. S. Khan",
+          "doctor_registration": null,
+          "test_names": [],
+          "line_items": [
+            {
+              "description": "Consultation",
+              "amount": 4800.0
+            }
+          ],
+          "total_amount": 4800.0,
+          "confidence": 0.92,
+          "fields": {
+            "F017": {
+              "document_type": "PRESCRIPTION",
+              "content": {
+                "diagnosis": "Migraine",
+                "doctor_name": "Dr. S. Khan"
+              }
+            },
+            "F018": {
+              "document_type": "HOSPITAL_BILL",
+              "content": {
+                "total": 4800
+              }
+            }
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "case_id": "TC010",
+      "case_name": "Network Hospital \u2014 Discount Applied",
+      "matched_expected": true,
+      "expected": {
+        "decision": "APPROVED",
+        "approved_amount": 3240,
+        "notes": "Network discount (20%) applied first on \u20b94,500 = \u20b93,600. Co-pay (10%) applied on \u20b93,600 = \u20b9360 deducted. Final: \u20b93,240.",
+        "system_must": [
+          "Apply network discount before co-pay, not after",
+          "Show the breakdown of discount and co-pay in the decision output"
+        ]
+      },
+      "response": {
+        "claim_id": "CLM-5D4C0C05A5",
+        "stopped_early": false,
+        "stop_code": null,
+        "message": "Claim approved. Network discount (20%) applied first on INR 4500 = INR 3600.; Co-pay (10%) deducted from INR 3600; final payable INR 3240.",
+        "decision": "APPROVED",
+        "approved_amount": 3240.0,
+        "confidence_score": 0.92,
+        "rejection_reasons": [],
+        "line_item_results": [],
+        "fraud_score": 0.05,
+        "fraud_signals": [],
+        "trace": [
+          {
+            "step": "trace_builder",
+            "status": "INFO",
+            "message": "Trace initialized for claim pipeline.",
+            "data": {
+              "claim_id": "CLM-5D4C0C05A5"
+            },
+            "timestamp": "2026-05-31T06:28:30.428280Z"
+          },
+          {
+            "step": "document_verification",
+            "status": "PASS",
+            "message": "Required documents are present, readable, and internally consistent.",
+            "data": {
+              "required": [
+                "HOSPITAL_BILL",
+                "PRESCRIPTION"
+              ],
+              "uploaded": [
+                "PRESCRIPTION",
+                "HOSPITAL_BILL"
+              ]
+            },
+            "timestamp": "2026-05-31T06:28:30.429278Z"
+          },
+          {
+            "step": "extraction_agent",
+            "status": "PASS",
+            "message": "Structured claim fields extracted from document metadata/content.",
+            "data": {
+              "confidence": 0.92,
+              "patient_names": [
+                "Deepak Shah"
+              ],
+              "total_amount": 4500.0,
+              "warnings": []
+            },
+            "timestamp": "2026-05-31T06:28:30.430277Z"
+          },
+          {
+            "step": "policy_engine",
+            "status": "PASS",
+            "message": "Network discount applied before co-pay.",
+            "data": {
+              "hospital_name": "Apollo Hospitals",
+              "discounted_amount": 3600.0
+            },
+            "timestamp": "2026-05-31T06:28:30.430277Z"
+          },
+          {
+            "step": "policy_engine",
+            "status": "PASS",
+            "message": "Policy rules applied successfully.",
+            "data": {
+              "category": "CONSULTATION",
+              "approved_amount": 3240.0,
+              "notes": [
+                "Network discount (20%) applied first on INR 4500 = INR 3600.",
+                "Co-pay (10%) deducted from INR 3600; final payable INR 3240."
+              ]
+            },
+            "timestamp": "2026-05-31T06:28:30.430277Z"
+          },
+          {
+            "step": "fraud_agent",
+            "status": "PASS",
+            "message": "Fraud signals evaluated.",
+            "data": {
+              "fraud_score": 0.05,
+              "signals": [],
+              "manual_review": false
+            },
+            "timestamp": "2026-05-31T06:28:30.431275Z"
+          },
+          {
+            "step": "decision_agent",
+            "status": "PASS",
+            "message": "Final claim decision produced.",
+            "data": {
+              "decision": "APPROVED",
+              "approved_amount": 3240.0,
+              "confidence_score": 0.92
+            },
+            "timestamp": "2026-05-31T06:28:30.432282Z"
+          }
+        ],
+        "extracted": {
+          "patient_names": [
+            "Deepak Shah"
+          ],
+          "diagnosis": "Acute Bronchitis",
+          "treatment": null,
+          "hospital_name": "Apollo Hospitals",
+          "doctor_name": "Dr. S. Iyer",
+          "doctor_registration": "TN/56789/2013",
+          "test_names": [],
+          "line_items": [
+            {
+              "description": "Consultation Fee",
+              "amount": 1500
+            },
+            {
+              "description": "Medicines",
+              "amount": 3000
+            }
+          ],
+          "total_amount": 4500.0,
+          "confidence": 0.92,
+          "fields": {
+            "F019": {
+              "document_type": "PRESCRIPTION",
+              "content": {
+                "doctor_name": "Dr. S. Iyer",
+                "doctor_registration": "TN/56789/2013",
+                "patient_name": "Deepak Shah",
+                "diagnosis": "Acute Bronchitis",
+                "medicines": [
+                  "Amoxicillin 500mg",
+                  "Salbutamol Inhaler"
+                ]
+              }
+            },
+            "F020": {
+              "document_type": "HOSPITAL_BILL",
+              "content": {
+                "hospital_name": "Apollo Hospitals",
+                "patient_name": "Deepak Shah",
+                "line_items": [
+                  {
+                    "description": "Consultation Fee",
+                    "amount": 1500
+                  },
+                  {
+                    "description": "Medicines",
+                    "amount": 3000
+                  }
+                ],
+                "total": 4500
+              }
+            }
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "case_id": "TC011",
+      "case_name": "Component Failure \u2014 Graceful Degradation",
+      "matched_expected": true,
+      "expected": {
+        "decision": "APPROVED",
+        "system_must": [
+          "Not crash or return a 500 error",
+          "Indicate in the output that a component failed and was skipped",
+          "Return a confidence score lower than a normal full-pipeline approval",
+          "Include a note that manual review is recommended due to incomplete processing"
+        ]
+      },
+      "response": {
+        "claim_id": "CLM-D3167F2871",
+        "stopped_early": false,
+        "stop_code": null,
+        "message": "Claim approved. Manual review is recommended because fraud analysis was skipped after a simulated component failure. Manual review is recommended due to incomplete processing.",
+        "decision": "APPROVED",
+        "approved_amount": 4000.0,
+        "confidence_score": 0.7,
+        "rejection_reasons": [],
+        "line_item_results": [],
+        "fraud_score": 0.0,
+        "fraud_signals": [
+          "FRAUD_AGENT_SKIPPED_DUE_TO_FAILURE"
+        ],
+        "trace": [
+          {
+            "step": "trace_builder",
+            "status": "INFO",
+            "message": "Trace initialized for claim pipeline.",
+            "data": {
+              "claim_id": "CLM-D3167F2871"
+            },
+            "timestamp": "2026-05-31T06:28:30.434412Z"
+          },
+          {
+            "step": "document_verification",
+            "status": "PASS",
+            "message": "Required documents are present, readable, and internally consistent.",
+            "data": {
+              "required": [
+                "HOSPITAL_BILL",
+                "PRESCRIPTION"
+              ],
+              "uploaded": [
+                "PRESCRIPTION",
+                "HOSPITAL_BILL"
+              ]
+            },
+            "timestamp": "2026-05-31T06:28:30.435895Z"
+          },
+          {
+            "step": "extraction_agent",
+            "status": "PASS",
+            "message": "Structured claim fields extracted from document metadata/content.",
+            "data": {
+              "confidence": 0.92,
+              "patient_names": [],
+              "total_amount": 4000.0,
+              "warnings": []
+            },
+            "timestamp": "2026-05-31T06:28:30.437092Z"
+          },
+          {
+            "step": "policy_engine",
+            "status": "PASS",
+            "message": "Policy rules applied successfully.",
+            "data": {
+              "category": "ALTERNATIVE_MEDICINE",
+              "approved_amount": 4000.0,
+              "notes": []
+            },
+            "timestamp": "2026-05-31T06:28:30.438097Z"
+          },
+          {
+            "step": "fraud_agent",
+            "status": "SKIPPED",
+            "message": "Fraud agent failure simulated; continuing with policy and decision agents.",
+            "data": {
+              "component": "fraud_agent"
+            },
+            "timestamp": "2026-05-31T06:28:30.439151Z"
+          },
+          {
+            "step": "decision_agent",
+            "status": "PASS",
+            "message": "Final claim decision produced.",
+            "data": {
+              "decision": "APPROVED",
+              "approved_amount": 4000.0,
+              "confidence_score": 0.7
+            },
+            "timestamp": "2026-05-31T06:28:30.440149Z"
+          }
+        ],
+        "extracted": {
+          "patient_names": [],
+          "diagnosis": "Chronic Joint Pain",
+          "treatment": "Panchakarma Therapy",
+          "hospital_name": "Ayur Wellness Centre",
+          "doctor_name": "Vaidya T. Krishnan",
+          "doctor_registration": "AYUR/KL/2345/2019",
+          "test_names": [],
+          "line_items": [
+            {
+              "description": "Panchakarma Therapy (5 sessions)",
+              "amount": 3000
+            },
+            {
+              "description": "Consultation",
+              "amount": 1000
+            }
+          ],
+          "total_amount": 4000.0,
+          "confidence": 0.92,
+          "fields": {
+            "F021": {
+              "document_type": "PRESCRIPTION",
+              "content": {
+                "doctor_name": "Vaidya T. Krishnan",
+                "doctor_registration": "AYUR/KL/2345/2019",
+                "diagnosis": "Chronic Joint Pain",
+                "treatment": "Panchakarma Therapy"
+              }
+            },
+            "F022": {
+              "document_type": "HOSPITAL_BILL",
+              "content": {
+                "hospital_name": "Ayur Wellness Centre",
+                "total": 4000,
+                "line_items": [
+                  {
+                    "description": "Panchakarma Therapy (5 sessions)",
+                    "amount": 3000
+                  },
+                  {
+                    "description": "Consultation",
+                    "amount": 1000
+                  }
+                ]
+              }
+            }
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "case_id": "TC012",
+      "case_name": "Excluded Treatment",
+      "matched_expected": true,
+      "expected": {
+        "decision": "REJECTED",
+        "rejection_reasons": [
+          "EXCLUDED_CONDITION"
+        ],
+        "confidence_score": "above 0.90"
+      },
+      "response": {
+        "claim_id": "CLM-9409E75467",
+        "stopped_early": false,
+        "stop_code": null,
+        "message": "Claim rejected: The diagnosis/treatment matches an exclusion in policy_terms.json.",
+        "decision": "REJECTED",
+        "approved_amount": 0.0,
+        "confidence_score": 0.92,
+        "rejection_reasons": [
+          "EXCLUDED_CONDITION"
+        ],
+        "line_item_results": [],
+        "fraud_score": 0.05,
+        "fraud_signals": [],
+        "trace": [
+          {
+            "step": "trace_builder",
+            "status": "INFO",
+            "message": "Trace initialized for claim pipeline.",
+            "data": {
+              "claim_id": "CLM-9409E75467"
+            },
+            "timestamp": "2026-05-31T06:28:30.442150Z"
+          },
+          {
+            "step": "document_verification",
+            "status": "PASS",
+            "message": "Required documents are present, readable, and internally consistent.",
+            "data": {
+              "required": [
+                "HOSPITAL_BILL",
+                "PRESCRIPTION"
+              ],
+              "uploaded": [
+                "PRESCRIPTION",
+                "HOSPITAL_BILL"
+              ]
+            },
+            "timestamp": "2026-05-31T06:28:30.443153Z"
+          },
+          {
+            "step": "extraction_agent",
+            "status": "PASS",
+            "message": "Structured claim fields extracted from document metadata/content.",
+            "data": {
+              "confidence": 0.92,
+              "patient_names": [],
+              "total_amount": 8000.0,
+              "warnings": []
+            },
+            "timestamp": "2026-05-31T06:28:30.444149Z"
+          },
+          {
+            "step": "policy_engine",
+            "status": "FAIL",
+            "message": "Excluded treatment detected.",
+            "data": {
+              "rejection_reasons": [
+                "EXCLUDED_CONDITION"
+              ],
+              "claim_text": "Morbid Obesity \u2014 BMI 37 Bariatric Consultation and Customised Diet Plan Bariatric Consultation Personalised Diet and Nutrition Program"
+            },
+            "timestamp": "2026-05-31T06:28:30.446148Z"
+          },
+          {
+            "step": "fraud_agent",
+            "status": "PASS",
+            "message": "Fraud signals evaluated.",
+            "data": {
+              "fraud_score": 0.05,
+              "signals": [],
+              "manual_review": false
+            },
+            "timestamp": "2026-05-31T06:28:30.446148Z"
+          },
+          {
+            "step": "decision_agent",
+            "status": "WARN",
+            "message": "Final claim decision produced.",
+            "data": {
+              "decision": "REJECTED",
+              "approved_amount": 0.0,
+              "confidence_score": 0.92
+            },
+            "timestamp": "2026-05-31T06:28:30.447150Z"
+          }
+        ],
+        "extracted": {
+          "patient_names": [],
+          "diagnosis": "Morbid Obesity \u2014 BMI 37",
+          "treatment": "Bariatric Consultation and Customised Diet Plan",
+          "hospital_name": null,
+          "doctor_name": "Dr. P. Banerjee",
+          "doctor_registration": "WB/34567/2015",
+          "test_names": [],
+          "line_items": [
+            {
+              "description": "Bariatric Consultation",
+              "amount": 3000
+            },
+            {
+              "description": "Personalised Diet and Nutrition Program",
+              "amount": 5000
+            }
+          ],
+          "total_amount": 8000.0,
+          "confidence": 0.92,
+          "fields": {
+            "F023": {
+              "document_type": "PRESCRIPTION",
+              "content": {
+                "doctor_name": "Dr. P. Banerjee",
+                "doctor_registration": "WB/34567/2015",
+                "diagnosis": "Morbid Obesity \u2014 BMI 37",
+                "treatment": "Bariatric Consultation and Customised Diet Plan"
+              }
+            },
+            "F024": {
+              "document_type": "HOSPITAL_BILL",
+              "content": {
+                "line_items": [
+                  {
+                    "description": "Bariatric Consultation",
+                    "amount": 3000
+                  },
+                  {
+                    "description": "Personalised Diet and Nutrition Program",
+                    "amount": 5000
+                  }
+                ],
+                "total": 8000
+              }
+            }
+          },
+          "warnings": []
+        }
+      }
+    }
+  ]
+}

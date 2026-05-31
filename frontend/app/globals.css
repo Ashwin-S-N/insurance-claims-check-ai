@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: #17201c;
+  background:
+    linear-gradient(180deg, rgba(124, 63, 88, 0.08), rgba(255, 255, 255, 0) 260px),
+    #f6f7f4;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.panel {
+  border: 1px solid #e7e2dc;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 20px;
+  box-shadow: 0 18px 50px rgba(23, 32, 28, 0.07);
+}

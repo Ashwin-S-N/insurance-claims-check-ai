@@ -1,0 +1,7 @@
+__pycache__/
+.pytest_cache/
+*.pyc
+backend/claims.db
+frontend/node_modules/
+frontend/.next/
+.env
